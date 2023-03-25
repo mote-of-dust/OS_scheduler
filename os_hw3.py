@@ -1,23 +1,34 @@
 import time
 
 '''
-to implement: arranging ready queue
-preempting
-quantum
+This program acts as a uni-processor scheduler. It schedules/preempts
+via peemptive priority, with a secondary criteria being round robin.
+
+A user must provide a file titled 'schedules.txt' which is then parsed
+into a 2d array of values, each row being labeled [arrival time][priority][cpu burst time]
+
+In the case of preemption, burst time requires for the process being benched is reduced based
+off of how many time units has passed with it running on the cpu.
+
+Upon completion the turn around time for each process is calculated, along with an average
+turn around time being calculated.
 
 '''
+
+
 def turnaround(finish_time, schedules):
     sum = 0
     avg = 0
     for i in range(len(finish_time)):
-        print('Process %d arrival time: %d' %(i, schedules[i][0]))
+        print('Process %d arrival time: %d' % (i, schedules[i][0]))
         print('Process %d finish time: %d' % (i, finish_time[i]))
         temp = finish_time[i] - schedules[i][0]
-        print('turn around for Process %d is: %d time units' % (i, temp))
+        print('turn around for Process %d is: %d time units\n' % (i, temp))
         sum += temp
     print()
     avg = sum / len(finish_time)
     print('Average turn around time: %d' % avg)
+
 
 def sortqueue(ready_queue, schedules):
     if len(ready_queue) > 1:
@@ -91,6 +102,8 @@ def premptive_prio(schedules):
             onCPU = ready_queue.pop(0)
             ready_queue.append(temp)
             ready_queue = sortqueue(ready_queue, schedules)
+            print("new ready queue is:")
+            print(ready_queue)
             runTime = 0
             time.sleep(1)
         elif len(ready_queue) > 0 and schedules[onCPU][1] == schedules[ready_queue[0]][1]:
@@ -104,6 +117,8 @@ def premptive_prio(schedules):
                 print("cur rdy q: ")
                 print(ready_queue)
                 ready_queue = sortqueue(ready_queue, schedules)
+                print("new ready queue is:")
+                print(ready_queue)
                 runTime = 0
                 time.sleep(1)
         if onCPUBool:
